@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-
+import { PeticionesTareasService } from './../../services/peticiones-tareas.service'
 
 @Component({
   selector: 'app-welcome',
