@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Tarea } from './../interfaces/tarea'
+import { Tarea } from './../interfaces/tarea';
 import { Router } from '@angular/router';
 
 
-const httpOption = {
-  headers: new HttpHeaders ({
-    'content-type': 'application/json'
-  })
-};
+// const httpOption = {
+//   headers: new HttpHeaders ({
+//     'content-type': 'application/json',
+//     'Access-Control-Allow-Origin': '*'
+//   })
+// };
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,9 @@ private urlback = 'http://127.0.0.1:5000';
   }
 
   crearTarea(tarea: Tarea){
-    return this.httpMethod.post(`${this.urlback}/crear_tarea`, tarea);
+    const path = `${this.urlback}/crear_tarea`;
+    console.log('Estoy en URl');
+    return this.httpMethod.post(path, tarea);
   }
 
   buscarTarea(id: string){

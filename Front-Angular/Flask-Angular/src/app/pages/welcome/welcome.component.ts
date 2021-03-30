@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
+//import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 
 import { PeticionesTareasService } from './../../services/peticiones-tareas.service';
 
@@ -38,27 +41,35 @@ import { Tarea } from 'src/app/interfaces/tarea';
       });
   }
 
-  pestanas =  [
-    {
-      name: 'Lista de Tareas',
-      icon: 'unordered-list'
-    },
-    {
-      name: 'Crear Tareas',
-      icon: 'edit'
-    }
-  ];
 
+  //Ventanas modales de notificaión de accionbes
+  modalError(Mensaje: string){
+    Swal.fire({
+      title: 'Advertencia!',
+      text: Mensaje,
+      icon: 'error',
+      confirmButtonText: 'Aceptar'
+    });
+  }
 
-resetForm(){
+  modalConfirmnacion(mensaje: string ){
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: mensaje,
+      showConfirmButton: false,
+      timer: 3500
+    });
+  }
+
+  /*
+   * Función que se encarga de borrar el contenido del Formulario
+   */
+  resetForm(e: MouseEvent): void {
+    e.preventDefault();
     this.datosFormTarea.reset();
-    alert('Borrado');
+    this.modalError('Los datos ingresados, se han borrado.');
   }
-
-enviarTareaForm(values){
-    console.log(values);
-  }
-
 
 
   ngOnInit(): void {
@@ -76,10 +87,12 @@ enviarTareaForm(values){
   }
 
   crearTarea(values){
+    console.log(values);
     this.tareasService.crearTarea(values)
-    .subscribe((tareaEnviada) => {
-      this.datosFormTarea.reset();
-      alert('Tarea Registrada exitosamente');
+    .subscribe((tareaRecibida) => {
+    //this.datosFormTarea.reset();
+    //this.ngOnInit();
+    this.modalConfirmnacion('La actividad, ha sido guardada');
     });
 
   }
@@ -87,7 +100,6 @@ enviarTareaForm(values){
   editarTarea( tarea ){
     this.tareasService.actualizarTarea(tarea)
     .subscribe(data => {
-      console.log(data);
     });
   }
 
