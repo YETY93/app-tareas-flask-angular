@@ -13,7 +13,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { WelcomeComponent } from './welcome.component';
-
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 
@@ -31,7 +31,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzTabsModule,
     NzTableModule,
     NzIconModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NzSpinModule
   ],
   declarations: [WelcomeComponent],
   exports: [WelcomeComponent,

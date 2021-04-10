@@ -1,3 +1,0 @@
-DEBUG = True
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://admin:UBU3214772130@localhost/api_flask'
-SQLALCHEMY_TRACK_MODIFICATIONS = False

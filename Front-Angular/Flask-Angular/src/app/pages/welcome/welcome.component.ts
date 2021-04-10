@@ -21,11 +21,10 @@ import { Tarea } from 'src/app/interfaces/tarea';
  export class WelcomeComponent implements OnInit {
   title = 'Aplicacion WEB de tareas';
 
-
+  formTarea!: FormGroup;
   public tareaInterface: Tarea;
-  datosFormTarea: FormGroup;
   public listaTareas: Tarea[];
-
+  public cargando: boolean;
 
 
 
@@ -34,15 +33,18 @@ import { Tarea } from 'src/app/interfaces/tarea';
   constructor( private formBuilder: FormBuilder,
                private tareasService: PeticionesTareasService) {
 
-      this.datosFormTarea = this.formBuilder.group({
-
-        titulo: ['', Validators.required],
-        descripcion: ['', Validators.required]
-      });
   }
 
 
-  //Ventanas modales de notificaión de accionbes
+  ngOnInit(): void {
+    this.cargando = true;
+    this.traerTareas();
+    this.activarFb();
+  }
+
+  /**
+   * Ventanas modales de notificaión de accionbes
+   */
   modalError(Mensaje: string){
     Swal.fire({
       title: 'Advertencia!',
@@ -62,18 +64,33 @@ import { Tarea } from 'src/app/interfaces/tarea';
     });
   }
 
+  submitForm(): void {
+    // tslint:disable-next-line: forin
+    for (const i in this.formTarea.controls){
+      this.formTarea.controls[i].markAsDirty();
+      this.formTarea.controls[i].updateValueAndValidity();
+    }
+  }
+
+    /**
+     * Función para instanciar el formulario de crear tareas
+     */
+
+    activarFb(): void{
+      this.formTarea = this.formBuilder.group({
+        titulo: [null, [Validators.required]],
+        descripcion: [null, [Validators.required]]
+      });
+    }
+
+
   /*
    * Función que se encarga de borrar el contenido del Formulario
    */
   resetForm(e: MouseEvent): void {
     e.preventDefault();
-    this.datosFormTarea.reset();
+    this.formTarea.reset();
     this.modalError('Los datos ingresados, se han borrado.');
-  }
-
-
-  ngOnInit(): void {
-    this.traerTareas();
   }
 
 
@@ -82,7 +99,15 @@ import { Tarea } from 'src/app/interfaces/tarea';
   traerTareas(){
     this.tareasService.listarTareas()
     .subscribe(data => {
-      this.listaTareas = data;
+      if (this.cargando ) {
+        setTimeout(() => {
+          this.listaTareas = data;
+          this.cargando = false;
+         }, 3000);
+      }else{
+        this.listaTareas = data;
+        this.cargando = false;
+      }
     });
   }
 
@@ -90,11 +115,12 @@ import { Tarea } from 'src/app/interfaces/tarea';
     console.log(values);
     this.tareasService.crearTarea(values)
     .subscribe((tareaRecibida) => {
-    //this.datosFormTarea.reset();
-    //this.ngOnInit();
+    console.log('HE sido pulsado crear');
     this.modalConfirmnacion('La actividad, ha sido guardada');
+    setTimeout(() => {
+      location.reload();
+     }, 3600);
     });
-
   }
 
   editarTarea( tarea ){

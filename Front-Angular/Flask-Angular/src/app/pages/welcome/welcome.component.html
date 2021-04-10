@@ -1,7 +1,15 @@
 <div style="background: #b7b7c9e3; padding: 5px">
-  <nz-tabset nzType="card" >
-    <nz-tab nzTitle="Lista de Tareas"> 
-      <nz-table #basicTable [nzData]="listaTareas">
+  <nz-tabset nzType="card">
+    <nz-tab nzTitle="Lista de Tareas" (nzClick)="traerTareas()">
+
+      <!-- Se ejecutra el loader despues de 2 seguindos y se ocultara para mostrar la tabla -->
+      <div class="cargandoTab" *ngIf="cargando">
+        <nz-spin nzSimple></nz-spin>
+      </div>
+
+      <nz-table #basicTable *ngIf="!cargando" [nzData]="listaTareas">
+
+
         <thead>
           <tr>
             <th nzSortOrder="sortOrder">Titulo</th>
@@ -20,62 +28,41 @@
         </tbody>
       </nz-table>
     </nz-tab>
+
     <nz-tab nzTitle="Crear Tareas">
-      <nz-card
-        style="width: 100%"
-        [nzBordered]="false"
-        nzTitle="Establecer Actividades"
-        [nzExtra]="extraTemplate"
-      >
-        <form
-          nz-form
-          [nzLayout]="'vertical'"
-          [formGroup]="datosFormTarea"
-          (ngSubmit)="crearTarea(datosFormTarea.value)"
-        >
+      <nz-card style="width: 100%" [nzBordered]="false" nzTitle="Establecer Actividades" [nzExtra]="extraTemplate">
+        <form nz-form [nzLayout]="'vertical'" [formGroup]="formTarea"
+          (ngSubmit)="crearTarea(formTarea.value)">
           <nz-form-item>
-            <nz-form-label [nzSpan]="6" nzFor="titulo" nzRequired>
+            <nz-form-label [nzSpan]="6" nzFor="titulo" nzRequired> 
               Título
             </nz-form-label>
-            <nz-form-control [nzSpan]="14">
-              <input
-                nz-input
-                formControlName="titulo"
-                placeholder="Título de la actividad"
-                required
-              />
+            <nz-form-control [nzSpan]="14" nzErrorTip="Digite el Título de la actividad" >
+              <input nz-input formControlName="titulo" placeholder="Título de la actividad" required />
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label [nzSpan]="6" nzFor="descripcion" nzRequired>
               Descripción
             </nz-form-label>
-            <nz-form-control
-              [nzSpan]="14"
-              nzErrorTip="Didige la descripcion de la actividad"
-            >
-              <textarea
-                formControlName="descripcion"
-                nz-input
-                rows="2"
-                placeholder="Escribe en que consiste la actividad"
-              ></textarea>
+            <nz-form-control [nzSpan]="14" nzErrorTip="Digite la descripcion de la actividad">
+              <textarea formControlName="descripcion" nz-input rows="2"
+                placeholder="Escribe en que consiste la actividad"></textarea>
             </nz-form-control>
           </nz-form-item>
           <div nz-row class="login-form-margin">
+            
             <div nz-col nzSpan="10">
-              <button nz-button nzType="primary" nzBlock>
-                Guardar
-              </button>
+              <nz-form-item>
+                <nz-form-control>
+                  <button nz-button nzType="primary" nzBlock [disabled]="!formTarea.valid">
+                    Guardar
+                  </button>
+                </nz-form-control>
+              </nz-form-item>
             </div>
             <div nz-col nzSpan="10" nzOffset="4">
-              <button
-                nz-button
-                nzType="dashed"
-                nzBlock
-                (click)="resetForm($event)"
-                nzDanger
-              >
+              <button nz-button nzType="dashed" nzBlock (click)="resetForm($event)" nzDanger>
                 Borrar
               </button>
             </div>
