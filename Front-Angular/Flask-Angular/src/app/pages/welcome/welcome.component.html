@@ -1,49 +1,74 @@
-<div style="background: #ececec; padding: 8px">
-  <nz-card
-    style="width: 100%"
-    [nzBordered]="false"
-    nzTitle="Establecer Actividades"
-    [nzExtra]="extraTemplate">
-    <form
-      nz-form
-      [nzLayout]="'vertical'"
-      [formGroup]="anexarTarea"
-      (ngSubmit)="submitForm()" >
-      <nz-form-item>
-        <nz-form-label [nzSpan]="6" nzFor="titulo" nzRequired>
-          Título
-        </nz-form-label>
-        <nz-form-control [nzSpan]="14">
-          <input
-            nz-input
-            name="titulo"
-            id="titulo"
-            placeholder="Título de la actividad"
-          />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSpan]="6" nzFor="descripcion" nzRequired>
-          Descripción
-        </nz-form-label>
-        <nz-form-control [nzSpan]="14">
-          <textarea
-            nz-input
-            placeholder="Describe la Actividad a realizar"
-            [nzAutosize]="{ minRows: 2, maxRows: 4 }">
-          </textarea>
-        </nz-form-control>
-      </nz-form-item>
+<div style="background: #b7b7c9e3; padding: 5px">
+  <nz-tabset nzType="card">
+    <nz-tab nzTitle="Lista de Tareas" (nzClick)="traerTareas()">
 
-      <div nz-row class="login-form-margin">
-      <div nz-col nzSpan="8">
-        <button nz-button nzType="primary" nzBlock>Guardar</button>
+      <!-- Se ejecutra el loader despues de 2 seguindos y se ocultara para mostrar la tabla -->
+      <div class="cargandoTab" *ngIf="cargando">
+        <nz-spin nzSimple></nz-spin>
       </div>
-      <div nz-col nzSpan="8" nzOffset="8">
-        <button nz-button nzType="dashed" nzBlock (click)="resetForm()" nzDanger>Borrar</button>
-      </div>
-      </div>
-    </form>
-  </nz-card>
-</div>
-<ng-template #extraTemplate> <a>Más</a></ng-template>
+
+      <nz-table #basicTable *ngIf="!cargando" [nzData]="listaTareas">
+
+
+        <thead>
+          <tr>
+            <th nzSortOrder="sortOrder">Titulo</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>{{ data.titulo }}</td>
+            <td>{{ data.descripcion }}</td>
+            <td>
+              <i nz-icon nzType="copy" nzTheme="twotone"></i>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+
+    <nz-tab nzTitle="Crear Tareas">
+      <nz-card style="width: 100%" [nzBordered]="false" nzTitle="Establecer Actividades" [nzExtra]="extraTemplate">
+        <form nz-form [nzLayout]="'vertical'" [formGroup]="formTarea"
+          (ngSubmit)="crearTarea(formTarea.value)">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzFor="titulo" nzRequired> 
+              Título
+            </nz-form-label>
+            <nz-form-control [nzSpan]="14" nzErrorTip="Digite el Título de la actividad" >
+              <input nz-input formControlName="titulo" placeholder="Título de la actividad" required />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzFor="descripcion" nzRequired>
+              Descripción
+            </nz-form-label>
+            <nz-form-control [nzSpan]="14" nzErrorTip="Digite la descripcion de la actividad">
+              <textarea formControlName="descripcion" nz-input rows="2"
+                placeholder="Escribe en que consiste la actividad"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+          <div nz-row class="login-form-margin">
+            
+            <div nz-col nzSpan="10">
+              <nz-form-item>
+                <nz-form-control>
+                  <button nz-button nzType="primary" nzBlock [disabled]="!formTarea.valid">
+                    Guardar
+                  </button>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nzSpan="10" nzOffset="4">
+              <button nz-button nzType="dashed" nzBlock (click)="resetForm($event)" nzDanger>
+                Borrar
+              </button>
+            </div>
+          </div>
+        </form>
+      </nz-card>
+    </nz-tab>
+  </nz-tabset>
+  <ng-template #extraTemplate> <a>crear Tarea</a></ng-template>
